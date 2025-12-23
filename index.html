@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Kart</title>
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
+      background-color: #fff;
+      margin: 0;
+    }
+
+    header {
+      background-color: #2e2e2e;
+      padding: 40px 20px;
+      text-align: center;
+      font-size: 120px;
+      font-weight: bold;
+    }
+
+    .blue { color: #007BFF; }
+    .yellow { color: #FFD700; }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid #aaa;
+      padding: 10px;
+    }
+
+    tfoot td {
+      font-weight: bold;
+    }
+
+    .btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      border: 2px solid black;
+      background: white;
+      cursor: pointer;
+    }
+
+    .thankyou {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <span class="blue">Your</span> <span class="yellow">Kart</span>
+</header>
+
+<div class="container">
+
+  <h2>Product Selection</h2>
+
+  <label for="productSelect">Choose a product:</label>
+  <select id="productSelect">
+    <option value="">-- Select a product --</option>
+  </select>
+
+  <table id="cartTable" style="display:none;">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Price (₹)</th>
+      </tr>
+    </thead>
+
+    <tbody></tbody>
+
+    <tfoot>
+      <tr>
+        <td>Winter Wonderland Deals (15% off)</td>
+        <td id="discountAmount">-₹0.00</td>
+      </tr>
+      <tr>
+        <td>Total Amount Payable</td>
+        <td id="finalAmount">₹0.00</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <button class="btn" onclick="checkout()">Checkout</button>
+  <div class="thankyou" id="thankyouMessage"></div>
+
+</div>
+
+<script>
+  const DISCOUNT_RATE = 0.15;
+
+  const products = [
+   [
+  { name: "Thucci Shirt", price: 2499 },
+  { name: "Pele Keans", price: 1399 },
+  { name: "Loos Pilipeepi", price: 1999 },
+  { name: "HaM Hoodie", price: 2200 },
+  { name: "Hee Jeens", price: 1700 },
+  { name: "Abibas Tracks", price: 950 },
+  { name: "Tortoise Neck Sweater", price: 1899 },
+  { name: "Allen Polly", price: 6500 },
+  { name: "Complaint", price: 1499 },
+  { name: "Tokyo Towers", price: 699 },
+  { name: "HaM", price: 1199 },
+  { name: "Style Costs", price: 2599 },
+  { name: "Never-Ending 22", price: 3499 },
+  { name: "East Side", price: 2400 },
+  { name: "Shtyle Unity", price: 1699 },
+  { name: "Myanvar", price: 8999 },
+  { name: "FabUndiya", price: 999 },
+  { name: "Le` Guys", price: 1599 },
+  { name: "Saggy Fe!ns", price: 1620 },
+  { name: "AvaaZ", price: 799 },
+  { name: "Panthaaluns", price: 1650 },
+  { name: "Kacchapuram Silk Saree", price: 6500 },
+  { name: "Romroj Lungi", price: 300 },
+  { name: "Sold Store", price: 899 },
+  { name: "Thrends", price: 560 }
+];
+  const select = document.getElementById("productSelect");
+  const tbody = document.querySelector("#cartTable tbody");
+  const cartTable = document.getElementById("cartTable");
+  const finalAmountEl = document.getElementById("finalAmount");
+  const discountEl = document.getElementById("discountAmount");
+  const thankyouMessage = document.getElementById("thankyouMessage");
+
+  let cart = [];
+
+  products.forEach(p => {
+    const opt = document.createElement("option");
+    opt.value = p.name;
+    opt.textContent = `${p.name} – ₹${p.price}`;
+    select.appendChild(opt);
+  });
+
+  select.addEventListener("change", () => {
+    const product = products.find(p => p.name === select.value);
+    if (!product) return;
+    cart.push(product);
+    updateCartTable();
+    select.value = "";
+  });
+
+  function updateCartTable() {
+    cartTable.style.display = "table";
+    tbody.innerHTML = "";
+
+    let subtotal = 0;
+
+    cart.forEach(p => {
+      subtotal += p.price;
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${p.name}</td><td>₹${p.price.toFixed(2)}</td>`;
+      tbody.appendChild(row);
+    });
+
+    const discount = subtotal * DISCOUNT_RATE;
+    const finalTotal = subtotal - discount;
+
+    discountEl.textContent = `-₹${discount.toFixed(2)}`;
+    finalAmountEl.textContent = `₹${finalTotal.toFixed(2)}`;
+  }
+
+  function checkout() {
+    if (cart.length === 0) {
+      alert("Add at least one product!");
+      return;
+    }
+
+    const subtotal = cart.reduce((sum, p) => sum + p.price, 0);
+    const discount = subtotal * DISCOUNT_RATE;
+    const total = subtotal - discount;
+
+    thankyouMessage.innerHTML = `
+      ✅ Thank you! Your total after Winter Wonderland discount is
+      <strong>₹${total.toFixed(2)}</strong>.  
+      Make payment <a href="https://sites.google.com/view/klipfartkart/home" target="_blank">here</a>.
+    `;
+  }
+</script>
+
+</body>
+</html>
