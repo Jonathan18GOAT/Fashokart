@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Your Kart</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Your Kart</title>
 
 <style>
   body {
@@ -29,7 +29,6 @@
     padding: 0 20px;
   }
 
-  /* ✅ Product dropdown styling */
   #productSelect {
     width: 360px;
     padding: 10px;
@@ -70,6 +69,7 @@
     font-size: 18px;
   }
 </style>
+</head>
 
 <body>
 
@@ -86,6 +86,8 @@
     <option value="">-- Select a product --</option>
   </select>
 
+  <button class="btn" onclick="addToCart()">Add</button>
+
   <table id="cartTable" style="display:none;">
     <thead>
       <tr>
@@ -93,7 +95,6 @@
         <th>Price (₹)</th>
       </tr>
     </thead>
-
     <tbody></tbody>
 
     <tfoot>
@@ -114,9 +115,9 @@
 </div>
 
 <script>
-  const DISCOUNT_RATE = 0.15;
+const DISCOUNT_RATE = 0.15;
 
- const products = [
+const products = [
   { name: "Thucci Shirt", price: 2499 },
   { name: "Pele Keans", price: 1399 },
   { name: "Loos Pilipeepi", price: 1999 },
@@ -140,77 +141,77 @@
   { name: "Panthaaluns", price: 1650 },
   { name: "Sathya Saathi", price: 6500 },
   { name: "Romroj Lungi", price: 300 },
-  { name: "Bod's Your Uncle", price: 999 },
-   { name: "Margot and Spenders", price: 2599 },
-   { name: "Ambani Exchange Jorts", price: 1099},
-   { name: "Jorts Frayed", price: 1599},
-  { name: "Relied AjjiYo",price: 560 }
+  { name: "Bod's Your Uncle", price: 999 }
 ];
-  const select = document.getElementById("productSelect");
-  const tbody = document.querySelector("#cartTable tbody");
-  const cartTable = document.getElementById("cartTable");
-  const finalAmountEl = document.getElementById("finalAmount");
-  const discountEl = document.getElementById("discountAmount");
-  const thankyouMessage = document.getElementById("thankyouMessage");
 
-  let cart = [];
+const select = document.getElementById("productSelect");
+const tbody = document.querySelector("#cartTable tbody");
+const cartTable = document.getElementById("cartTable");
+const finalAmountEl = document.getElementById("finalAmount");
+const discountEl = document.getElementById("discountAmount");
+const thankyouMessage = document.getElementById("thankyouMessage");
 
-  products.forEach(p => {
-    const opt = document.createElement("option");
-    opt.value = p.name;
-    opt.textContent = `${p.name} – ₹${p.price}`;
-    select.appendChild(opt);
-  });
+let cart = [];
 
-select.addEventListener("change", () => {
-  if (isKeyboard) return;
-
-  const product = products.find(p => p.name === select.value);
-  if (!product) return;
-
-  cart.push(product);
-  updateCartTable();
-  select.value = "";
+// Fill dropdown
+products.forEach(p => {
+  const opt = document.createElement("option");
+  opt.value = p.name;
+  opt.textContent = `${p.name} – ₹${p.price}`;
+  select.appendChild(opt);
 });
 
-  function updateCartTable() {
-    cartTable.style.display = "table";
-    tbody.innerHTML = "";
+// ✅ Add button instead of auto-add
+function addToCart() {
+  const selected = select.value;
+  if (!selected) return;
 
-    let subtotal = 0;
+  const product = products.find(p => p.name === selected);
+  cart.push(product);
 
-    cart.forEach(p => {
-      subtotal += p.price;
-      const row = document.createElement("tr");
-      row.innerHTML = `<td>${p.name}</td><td>₹${p.price.toFixed(2)}</td>`;
-      tbody.appendChild(row);
-    });
+  updateCartTable();
+  select.value = "";
+}
 
-    const discount = subtotal * DISCOUNT_RATE;
-    const finalTotal = subtotal - discount;
+// Update table
+function updateCartTable() {
+  cartTable.style.display = "table";
+  tbody.innerHTML = "";
 
-    discountEl.textContent = `-₹${discount.toFixed(2)}`;
-    finalAmountEl.textContent = `₹${finalTotal.toFixed(2)}`;
+  let subtotal = 0;
+
+  cart.forEach(p => {
+    subtotal += p.price;
+    const row = document.createElement("tr");
+    row.innerHTML = `<td>${p.name}</td><td>₹${p.price.toFixed(2)}</td>`;
+    tbody.appendChild(row);
+  });
+
+  const discount = subtotal * DISCOUNT_RATE;
+  const finalTotal = subtotal - discount;
+
+  discountEl.textContent = `-₹${discount.toFixed(2)}`;
+  finalAmountEl.textContent = `₹${finalTotal.toFixed(2)}`;
+}
+
+// Checkout
+function checkout() {
+  if (cart.length === 0) {
+    alert("Add at least one product!");
+    return;
   }
 
-  function checkout() {
-    if (cart.length === 0) {
-      alert("Add at least one product!");
-      return;
-    }
+  const subtotal = cart.reduce((sum, p) => sum + p.price, 0);
+  const discount = subtotal * DISCOUNT_RATE;
+  const total = subtotal - discount;
 
-    const subtotal = cart.reduce((sum, p) => sum + p.price, 0);
-    const discount = subtotal * DISCOUNT_RATE;
-    const total = subtotal - discount;
-
-    thankyouMessage.innerHTML = `
-      ✅ Thank you! Your total after Biriyani Bonanza Deals is
-      <strong>₹${total.toFixed(2)}</strong>.  
-      Make payment <a href="https://sites.google.com/view/klipfartkart/home" target="_blank">here</a>.
-    `;
-  }
+  thankyouMessage.innerHTML = `
+    ✅ Thank you! Your total after Biriyani Bonanza Deals is
+    <strong>₹${total.toFixed(2)}</strong>.  
+    Make payment <a href="https://sites.google.com/view/klipfartkart/home" target="_blank">here</a>.
+  `;
+}
 </script>
 
 </body>
-
 </html>
