@@ -162,13 +162,16 @@
     select.appendChild(opt);
   });
 
-  select.addEventListener("change", () => {
-    const product = products.find(p => p.name === select.value);
-    if (!product) return;
-    cart.push(product);
-    updateCartTable();
-    select.value = "";
-  });
+select.addEventListener("change", (e) => {
+  if (e.detail === 0) return;
+
+  const product = products.find(p => p.name === select.value);
+  if (!product) return;
+
+  cart.push(product);
+  updateCartTable();
+  select.value = "";
+});
 
   function updateCartTable() {
     cartTable.style.display = "table";
